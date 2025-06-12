@@ -115,9 +115,48 @@ async function resendVerificationCode(email: string) {
   await sendVerificationCode(email, verificationCode, user.username);
 }
 
+const sendEmailChangeVerificationCode = async (
+  email: string,
+  code: string,
+  username: string,
+  newEmail: string
+) => {
+  const name = username[0].toUpperCase() + username.slice(1);
+
+  await transporter.sendMail({
+    from: `"Chatify Security" <${process.env.MAIL_USER}>`,
+    to: email,
+    subject: "Confirm Email Change Request",
+    html: `
+      <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f9f9f9; padding: 24px; color: #111;">
+        <div style="max-width: 600px; margin: auto; background-color: #ffffff; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); padding: 32px;">
+          <h2 style="color: #d97706;">Email Change Request</h2>
+          <p style="font-size: 16px;">
+            Hi ${name}, someone (hopefully you) requested to change the email address on your Chatify account.
+          </p>
+          <p style="font-size: 16px;">
+            The new requested email address is: <strong>${newEmail}</strong>
+          </p>
+          <p style="font-size: 16px;">To confirm this change, please use the verification code below:</p>
+          <p style="font-size: 24px; font-weight: bold; color: #d97706; margin: 16px 0;">${code}</p>
+          <p style="font-size: 14px; color: #666;">
+            This code is valid for the next 5 minutes. If you did not request this, please ignore this message or secure your account.
+          </p>
+          <hr style="margin: 24px 0;" />
+          <p style="font-size: 14px; color: #999;">
+            If you have any concerns, contact our support team.
+          </p>
+          <p style="font-size: 14px; color: #999;">– The Chatify Security Team</p>
+        </div>
+      </div>
+    `,
+  });
+};
+
 export {
   generateVerificationCode,
   verifyCode,
   resendVerificationCode,
   sendVerificationCode,
+  sendEmailChangeVerificationCode,
 };

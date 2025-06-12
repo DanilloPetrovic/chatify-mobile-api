@@ -62,3 +62,35 @@ export const login = async (data: { email: string; password: string }) => {
   const { password: _, ...userWithoutPassword } = user;
   return { token, user: userWithoutPassword };
 };
+
+export const getUserProfile = async (userId: number) => {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+  });
+
+  return user;
+};
+
+export const editProfile = async (
+  userId: number,
+  data: { bio?: string; username?: string }
+) => {
+  const updatedUser = await prisma.user.update({
+    where: { id: userId },
+    data: {
+      bio: data.bio,
+      username: data.username,
+    },
+    select: {
+      id: true,
+      email: true,
+      bio: true,
+      username: true,
+      updatedAt: true,
+    },
+  });
+
+  return updatedUser;
+};
+
+export const changeEmail = async (userId: number, data: { newEmail:string })
