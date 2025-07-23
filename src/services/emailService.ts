@@ -153,10 +153,47 @@ const sendEmailChangeVerificationCode = async (
   });
 };
 
+const sendPasswordResetCode = async (
+  email: string,
+  code: string,
+  username: string
+) => {
+  const name = username[0].toUpperCase() + username.slice(1);
+
+  await transporter.sendMail({
+    from: `"Chatify Support" <${process.env.MAIL_USER}>`,
+    to: email,
+    subject: "Reset Your Chatify Password",
+    html: `
+      <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f9f9f9; padding: 24px; color: #111;">
+        <div style="max-width: 600px; margin: auto; background-color: #ffffff; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); padding: 32px;">
+          <h2 style="color: #ef4444;">Reset Your Password</h2>
+          <p style="font-size: 16px;">
+            Hi ${name}, we received a request to reset your Chatify password.
+          </p>
+          <p style="font-size: 16px;">
+            Use the following verification code to proceed:
+          </p>
+          <p style="font-size: 24px; font-weight: bold; color: #ef4444; margin: 16px 0;">${code}</p>
+          <p style="font-size: 14px; color: #666;">
+            This code is valid for the next 5 minutes. If you didn't request a password reset, you can ignore this message.
+          </p>
+          <hr style="margin: 24px 0;" />
+          <p style="font-size: 14px; color: #999;">
+            Need help? Contact our support team.
+          </p>
+          <p style="font-size: 14px; color: #999;">– The Chatify Team</p>
+        </div>
+      </div>
+    `,
+  });
+};
+
 export {
   generateVerificationCode,
   verifyCode,
   resendVerificationCode,
   sendVerificationCode,
   sendEmailChangeVerificationCode,
+  sendPasswordResetCode,
 };

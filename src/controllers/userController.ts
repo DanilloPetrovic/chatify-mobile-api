@@ -20,6 +20,7 @@ export const login = async (req: Request, res: Response) => {
     res.status(201).json(user);
   } catch (error) {
     res.status(500).json({ message: "Internal server error" });
+    console.log(error);
   }
 };
 
@@ -71,5 +72,66 @@ export async function editProfile(req: AuthenticateRequest, res: Response) {
     res.json(user);
   } catch (error) {
     res.status(500).json({ message: "Server error" });
+  }
+}
+
+export async function changeEmail(req: AuthenticateRequest, res: Response) {
+  try {
+    if (!req.user) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    const { newEmail } = req.body;
+
+    const result = await userService.changeEmail(req.user.id, { newEmail });
+    res.json(result);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Failed to initiate email change" });
+  }
+}
+
+export async function confirmEmailChange(
+  req: AuthenticateRequest,
+  res: Response
+) {
+  try {
+    if (!req.user) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    const { code } = req.body;
+
+    const result = await userService.confirmEmailChange(req.user.id, code);
+    res.json(result);
+  } catch (error) {
+    console.error(error);
+    res.status(400).json({ message: "Invalid or expired code" });
+  }
+}
+
+export async function requestPasswordReset(req: Request, res: Response) {
+  try {
+    const { email } = req.body;
+
+    await userService.requestPasswordReset(email);
+
+    res.json({ message: "Password reset code sent to your email" });
+  } catch (error) {
+    console.error(error);
+    res.status(400).json({ message: "Could not send reset code" });
+  }
+}
+
+export async function resetPassword(req: Request, res: Response) {
+  try {
+    const { email, code, newPassword } = req.body;
+
+    await userService.resetPassword(email, code, newPassword);
+
+    res.json({ message: "Password successfully reset" });
+  } catch (error) {
+    console.error(error);
+    res.status(400).json({ message: "Failed to reset password" });
   }
 }

@@ -30,4 +30,26 @@ router.post("/verify-email", asyncHandler(userController.verifyEmail));
 router.post("/resend-email", asyncHandler(userController.resendEmail));
 router.get("/me", authMiddleware, asyncHandler(userController.getMe));
 
+router.post(
+  "/change-email",
+  authMiddleware,
+  asyncHandler(userController.changeEmail)
+);
+router.post(
+  "/confirm-email-change",
+  authMiddleware,
+  asyncHandler(userController.confirmEmailChange)
+);
+
+router.post(
+  "/request-password-reset",
+  authMiddleware,
+  asyncHandler(userController.requestPasswordReset)
+);
+router.post(
+  "/reset-password",
+  authMiddleware,
+  asyncHandler(userController.resetPassword)
+);
+
 export default router;
