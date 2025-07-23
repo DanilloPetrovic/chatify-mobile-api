@@ -5,8 +5,14 @@ import { AuthenticateRequest } from "../types/AuthenticatedRequest";
 
 export const register = async (req: Request, res: Response) => {
   try {
-    const { email, password, username } = req.body;
-    const user = await userService.register({ email, password, username });
+    const { firstName, lastName, email, password, username } = req.body;
+    const user = await userService.register({
+      firstName,
+      lastName,
+      email,
+      password,
+      username,
+    });
     res.status(201).json(user);
   } catch (error) {
     res.status(500).json({ message: "Internal server error" });

@@ -11,6 +11,8 @@ import {
 } from "./emailService";
 
 export const register = async (data: {
+  firstName: string;
+  lastName: string;
   email: string;
   password: string;
   username: string;
@@ -29,6 +31,8 @@ export const register = async (data: {
 
   const user = await prisma.user.create({
     data: {
+      firstName: data.firstName,
+      lastName: data.lastName,
       username: data.username,
       email: data.email,
       password: hashedPassword,
